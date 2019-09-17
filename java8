@@ -1,0 +1,248 @@
+Serialization and Deserialization in Java:
+Serialization is a mechanism of converting the state of an object into a byte stream. Deserialization is the reverse process where the byte stream is used 
+to recreate the actual Java object in memory. This mechanism is used to persist the object.
+The ObjectOutputStream class contains writeObject() method for serializing an Object.
+The ObjectInputStream class contains readObject() method for deserializing an object.
+
+Only the objects of those classes can be serialized which are implementing java.io.Serializable interface.
+Serializable is a marker interface (has no data member and method). 
+It is used to “mark” java classes so that objects of these classes may get certain capability. Other examples of marker interfaces are:- Cloneable and Remote.
+
+Points to remember
+1. If a parent class has implemented Serializable interface then child class doesn’t need to implement it but vice-versa is not true.
+2. Only non-static data members are saved via Serialization process.
+3. Static data members and transient data members are not saved via Serialization process.So, if you don’t want to save value of a non-static data member then make it transient.
+4. Constructor of object is never called when an object is deserialized.
+5. Associated objects must be implementing Serializable interface.
+
+What is the diff Pipeline project in jenkins.?
+
+A.The difference is that in Pipeline we have the ability to break our jobs out into different stages and we can have whatever 
+stages we'd like to represent the process we use to deploy software and of course, if anything goes wrong,
+we can see which stage had the problem; for example. We even have the ability to add in verification before we proceed. 
+We have the ability to run stages in parallel so we could have multiple tests executing in separate branches very easily.
+
+Spring Boot and multiple external configuration files
+
+When using Spring Boot the properties are loaded in the following order.
+Command line arguments.
+Java System properties (System.getProperties()).
+OS environment variables.
+JNDI attributes from java:comp/env
+A RandomValuePropertySource that only has properties in random.*.
+Application properties outside of your packaged jar (application.properties including YAML and profile variants).
+Application properties packaged inside your jar (application.properties including YAML and profile variants).
+@PropertySource annotations on your @Configuration classes.
+Default properties (specified using SpringApplication.setDefaultProperties).
+When resolving properties (i.e. @Value("${myprop}") resolving is done in the reverse order (so starting with 9).
+
+Q) hashcode() and equals():
+ 
+A)If your class contains various fields, and you want to make sure that two objects of your class that have "same" content ... end up as equal.
+
+So, the place where you care about equals/hashCode most often is when you start pushing your objects into collections for example.
+
+Q)What are defaults methods?
+
+Default method are those methods in interface which have body and use default keywords.Default method are introduced in Java 8 mainly because of backward compatibility.
+Adding the new method in existing Interface without breaking the old code.
+example: We have a classes A,B,C,D implements XYZ interface, then if we add any method in XYZ interface,we have to change the code all the implemented classes.
+
+Static method(): It's also same like default method, but we cannot override the static methods.we can use the InterfaceName.method().
+
+
+Q)What is ConcurrentHashMap?
+
+ ConcurrentHashMap is a thread-safe.Put(),remove() are thread safe,not get().HashTable has Object level locking but ConcurrentHashMap has bucket 
+level locaking thus has better performance.
+
+JAVA 8 coding questions
+
+public class Employee {
+	private String name;
+	private int age;
+	
+	public Employee(String name, int age) {
+		super();
+		this.name = name;
+		this.age = age;
+	}
+}
+1)Given a list of employees, you need to filter all the employee whose age is greater than 20 and print the employee names
+List<String> employeeFilteredList = employeeList.stream()
+		          .filter(e->e.getAge()>20)
+		          .map(Employee::getName)
+		          .collect(Collectors.toList());
+
+2:Given the list of employees, count number of employees with age 25?
+
+You can use combination of filter and count to find this.
+List<Employee> employeeList = createEmployeeList();
+long count = employeeList.stream()
+.filter(e->e.getAge()>25)
+.count();
+System.out.println("Number of employees with age 25 are : "+count);
+3:Given the list of employees, find the employee with name “Mary”.
+Answer:
+It is again very simple logic, change the main function in above class as following.
+List<Employee> employeeList = createEmployeeList();
+		Optional<Employee> e1 = employeeList.stream()
+		          .filter(e->e.getName().equalsIgnoreCase("Mary")).findAny();
+		        
+		if(e1.isPresent())
+			System.out.println(e1.get());
+4:Given a list of employee, find maximum age of employee?
+
+List<Employee> employeeList = createEmployeeList();
+		OptionalInt max = employeeList.stream().mapToInt(Employee::getAge).max();
+		        
+		if(max.isPresent())
+			System.out.println("Maximum age of Employee: "+max.getAsInt());
+5.Given a list of employees, sort all the employee on the basis of age?
+List<Employee> employeeList = createEmployeeList();
+		employeeList.sort((e1,e2)->e1.getAge()-e2.getAge());
+		employeeList.forEach(System.out::println);
+6.Join the all employee names with “,” ?
+List<Employee> employeeList = createEmployeeList();
+		List<String> employeeNames = employeeList
+				                     .stream()
+				                     .map(Employee::getName)
+				                     .collect(Collectors.toList());
+		String employeeNamesStr = String.join(",", employeeNames);
+		System.out.println("Employees are: "+employeeNamesStr);
+7:Given the list of employee, group them by employee name?
+List<Employee> employeeList = createEmployeeList();
+		Map<String, List<Employee>> map = employeeList.stream()
+				                              .collect(Collectors.groupingBy(Employee::getName));
+		map.forEach((name,employeeListTemp)->System.out.println("Name: "+name+" ==>"+employeeListTemp));
+	}
+	
+	public static List<Employee> createEmployeeList()
+	{
+		List<Employee> employeeList=new ArrayList<>();
+ 
+		Employee e1=new Employee("John",21);
+		Employee e2=new Employee("Martin",19);
+		Employee e3=new Employee("Mary",31);
+		Employee e4=new Employee("Mary",18);
+		Employee e5=new Employee("John",26);
+ 
+		employeeList.add(e1);
+		employeeList.add(e2);
+		employeeList.add(e3);
+		employeeList.add(e4);
+		employeeList.add(e5);
+ 
+		return employeeList;
+	}
+
+8.Difference between Intermediate and terminal operations in Stream?
+Answer:
+Java 8 stream supports both intermediate and terminal operation.
+
+Intermediate operations are lazy in nature and do not get executed immediately. Terminal operations are not lazy, they are executed as soon as encountered. Intermediate operation is memorized and is called when terminal operation is called.
+
+All Intermediate operations return stream as it just transforms stream into another and terminal operation don’t.
+
+Example of Intermediate operations are:
+
+filter(Predicate)
+map(Function)
+flatmap(Function)
+sorted(Comparator)
+distinct()
+limit(long n)
+skip(long n)
+
+Example of terminal operations are :
+
+forEach
+toArray
+reduce
+collect
+min
+max
+count
+anyMatch
+allMatch
+noneMatch
+findFirst
+findAny
+
+Question 9:
+Given the list of numbers, remove the duplicate elements from the list.
+Answer:
+You can simply use stream and then collect it to set using Collections.toSet() method.
+
+public class RemoveDuplicatesFromListMain {
+	public static void main(String[] args)
+	{
+		Integer[] arr=new Integer[]{1,2,3,4,3,2,4,2};
+		List<Integer> listWithDuplicates = Arrays.asList(arr);
+		
+		Set<Integer> setWithoutDups = listWithDuplicates.stream().collect(Collectors.toSet());
+		setWithoutDups.forEach((i)->System.out.print(" "+i));
+	}
+}
+ 
+You can use distinct as well to avoid duplicates as following.
+ 
+Integer[] arr=new Integer[]{1,2,3,4,3,2,4,2};
+		List<Integer> listWithDuplicates = Arrays.asList(arr);
+
+List<Integer> listWithoutDups = listWithDuplicates.stream().distinct().collect(Collectors.toList());
+		listWithoutDups.forEach((i)->System.out.print(" "+i));
+ 
+
+Question 10:
+Difference between Stream’s findFirst() and findAny()?
+
+findFirst will always return the first element from the stream whereas findAny is allowed to choose any element from the stream.
+findFirst has deterministic behavior whereas findAny is nondeterministic behavior.
+
+
+Question 11:
+Given a list of numbers, square them and filter the numbers which are greater 10000 and then find average of them.
+Answer:
+You can use the map function to square the number and then filter to avoid numbers which are less than 10000.
+We will use average as terminating function in this case.
+
+public class RemoveDuplicatesFromListMain {
+	public static void main(String[] args)
+	{
+		Integer[] arr=new Integer[]{100,24,13,44,114,200,40,112};
+		List<Integer> list = Arrays.asList(arr);
+		OptionalDouble average = list.stream()
+				                 .mapToInt(n->n*n)
+				                 .filter(n->n>10000)
+				                 .average();
+		
+		if(average.isPresent())
+			System.out.println(average.getAsDouble());
+		
+	}
+}
+ 
+output:
+
+21846.666666666668
+
+Question 12:
+What is use of Optional in Java 8?
+Answer:
+Java 8 optional can be used to avoid NullPointerException.You can read about the detailed tutorial.
+
+Question 13:
+What is predicate function interface?
+
+Answer:
+Predicate is single argument function which returns true or false. It has test method which returns boolean.
+When we are using filter in above example, we are actually passing Predicate functional interface to it.
+
+Read Java 8 predicate
+
+Question 14:
+What is consumer function interface?
+Answer:
+Consumer is single argument functional interface which does not return any value.
+When we are using foreach in above example, we are actually passing Consumer functional interface to it.
